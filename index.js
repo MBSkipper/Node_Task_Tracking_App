@@ -4,8 +4,8 @@
 // (Runs on http://localhost:3000)
 // if terminal instruction correct then
 //expect to see 'task manager app is ready to use on http://localhost:3000'
- */
-
+//type nodemon in terminal to invoke nodemon and negate use of Ctl^ C and node index, respectively to stop and start the server
+*/
 
 const express = require('express')
 
@@ -15,7 +15,7 @@ app.use(express.json());  // with out this cannot destructure property 'text' of
 
 app.use(express.urlencoded( {extended: false} )) // express.urlencoded() is middleware that is required because in POST API cannot directly access req.body in express (line 83).  It is set to {extended: false} because we are not using complex data
 
-/*In app data provided in an array as no database is attached */
+/* DATA ARRAY - In app data provided in an array as no database is attached */
 const TASKS = [
     {
         id: 1,
@@ -74,7 +74,7 @@ app.get('/', (req, res) => {
 })
 
 /* Note no fetch method required because data is in app in TASKS array above not in a database */
-/*GET */
+/*GET API*/
 app.get('/tasks', (req, res) => {
     res.json({
         status: 'Success',
@@ -82,7 +82,7 @@ app.get('/tasks', (req, res) => {
     })
 })
 
-/*POST */
+/*POST API*/
 app.post('/tasks', (req, res) => {
     
     const { text } = req.body //request - this gets a list of tasks
