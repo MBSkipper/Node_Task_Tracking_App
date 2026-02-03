@@ -1,55 +1,70 @@
+/** IMPORTANT - START BACKEND:
+ //In terminal in VS code type 
+// node index.js
+// (Runs on http://localhost:3000)
+// if terminal instruction correct then
+//expect to see 'task manager app is ready to use on http://localhost:3000'
+ */
+
+
 const express = require('express')
 
 const app = express()
+
+app.use(express.json());  // with out this cannot destructure property 'text' of req.body IMPORTANT put this in the code this before the routes
+
+app.use(express.urlencoded( {extended: false} )) // express.urlencoded() is middleware that is required because in POST API cannot directly access req.body in express (line 83).  It is set to {extended: false} because we are not using complex data
 
 /*In app data provided in an array as no database is attached */
 const TASKS = [
     {
         id: 1,
-        title: 'Select the lunch menu',
+        text: 'Select the lunch menu',
         completed: true
     },
     {
         id: 2,
-        title: 'Shop for ingredients',
+        text: 'Shop for ingredients',
         completed: false
     },
     {
         id: 3,
-        title: 'Send out lunch invitations',
+        text: 'Send out lunch invitations',
         completed: true
     },
     {
         id: 4,
-        title: 'Cook the starter and main course',
+        text: 'Cook the starter and main course',
         completed: false
     },
     {
         id: 5,
-        title: 'Cook the dessert and freeze it',
+        text: 'Cook the dessert and freeze it',
         completed: false
     },
     {
         id: 5,
-        title: 'Defrost the dessert',
+        text: 'Defrost the dessert',
         completed: false
     },
     {
         id: 6,
-        title: 'Host the lunch',
+        text: 'Host the lunch',
         completed: false
     },
     {
         id: 7,
-        title: 'Clear up',
+        text: 'Clear up',
         completed: false
     },
     {
         id: 8,
-        title: 'Set up tables and chairs',
+        text: 'Set up tables and chairs',
         completed: false
     }
 ]
+
+let taskCounter = 9 //initial value = 9 as there are already 8 tasks in the tasks array
 
 app.get('/', (req, res) => {
     res.json({
@@ -59,11 +74,30 @@ app.get('/', (req, res) => {
 })
 
 /* Note no fetch method required because data is in app in TASKS array above not in a database */
+/*GET */
 app.get('/tasks', (req, res) => {
     res.json({
         status: 'Success',
         data: TASKS
     })
+})
+
+/*POST */
+app.post('/tasks', (req, res) => {
+    
+    const { text } = req.body //request - this gets a list of tasks
+
+    const newTask = {
+        id: taskCounter++, //increments onwards from 8 existing tasks plus any new ones added
+        text,
+        completed: false //default value
+    }
+    TASKS.push(newTask)
+
+     res.json({           //response to client
+        status: 'SUCCESS',
+        message: 'Task added successfully!'
+     })
 })
 
 
@@ -83,10 +117,24 @@ app.listen(3000, () => {
         -   default: set to false
 
  - API's required
-    1. GET/tasks - Returns list of all tasks
+    1. GET/tasks - Returns list of all tasks ✅
     2. POST/tasks - Creates a new task
-    3. PATCH/tasks/id - Update an existing task
-    4. DELETE/tasks/id - Delete an existing task
+    3. PATCH/tasks/:id - Update an existing task, can also be used to mark a task as complete so only this single route is required
+    4. DELETE/tasks/:id - Delete an existing task
+
+ -  Tasks for this and other similar projects
+    1. Create API's - demonstrate for this project
+    2. Test API's using Postman - demonstrate for this project
+    3. Create documentation to explain the API's (in theory)
+        - what the API does
+        - what the expected outcomes would be 
+            - false scenarios
+            - true scenarios
+    4. Forward API's to front-end developer (in theory) to integrate into their application
+
+ -  Main considerations
+    - structure of data should follow the logic of the front end design
+
 
 
  */
