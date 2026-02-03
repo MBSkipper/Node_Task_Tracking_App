@@ -11,60 +11,15 @@ const express = require('express')
 
 const app = express()
 
+const taskRoutes = require('./src/routes/task') //gives access to router in routes/task file
+
 app.use(express.json());  // with out this cannot destructure property 'text' of req.body IMPORTANT put this in the code this before the routes
 
-app.use(express.urlencoded( {extended: false} )) // express.urlencoded() is middleware that is required because in POST API cannot directly access req.body in express (line 83).  It is set to {extended: false} because we are not using complex data
+app.use('/tasks', taskRoutes) //The main name of the route goes here in this case '/tasks'
 
-/* DATA ARRAY - In app data provided in an array as no database is attached */
-const TASKS = [
-    {
-        id: 1,
-        text: 'Select the lunch menu',
-        completed: true
-    },
-    {
-        id: 2,
-        text: 'Shop for ingredients',
-        completed: false
-    },
-    {
-        id: 3,
-        text: 'Send out lunch invitations',
-        completed: true
-    },
-    {
-        id: 4,
-        text: 'Cook the starter and main course',
-        completed: false
-    },
-    {
-        id: 5,
-        text: 'Cook the dessert and freeze it',
-        completed: false
-    },
-    {
-        id: 5,
-        text: 'Defrost the dessert',
-        completed: false
-    },
-    {
-        id: 6,
-        text: 'Host the lunch',
-        completed: false
-    },
-    {
-        id: 7,
-        text: 'Clear up',
-        completed: false
-    },
-    {
-        id: 8,
-        text: 'Set up tables and chairs',
-        completed: false
-    }
-]
+app.use(express.urlencoded( {extended: false} )) // express.urlencoded() is middleware that is required because in POST API cannot directly access req.body in express (line 88).  It is set to {extended: false} because we are not using complex data
 
-let taskCounter = 9 //initial value = 9 as there are already 8 tasks in the tasks array
+
 
 app.get('/', (req, res) => {
     res.json({
@@ -72,34 +27,6 @@ app.get('/', (req, res) => {
         now: new Date()
     })
 })
-
-/* Note no fetch method required because data is in app in TASKS array above not in a database */
-/*GET API*/
-app.get('/tasks', (req, res) => {
-    res.json({
-        status: 'Success',
-        data: TASKS
-    })
-})
-
-/*POST API*/
-app.post('/tasks', (req, res) => {
-    
-    const { text } = req.body //request - this gets a list of tasks
-
-    const newTask = {
-        id: taskCounter++, //increments onwards from 8 existing tasks plus any new ones added
-        text,
-        completed: false //default value
-    }
-    TASKS.push(newTask)
-
-     res.json({           //response to client
-        status: 'SUCCESS',
-        message: 'Task added successfully!'
-     })
-})
-
 
 app.listen(3000, () => {
     console.log('task manager app is ready to use on http://localhost:3000')
@@ -134,6 +61,29 @@ app.listen(3000, () => {
 
  -  Main considerations
     - structure of data should follow the logic of the front end design
+
+ -  Routes and Controllers in separate folders
+    This GET API as originally written below contains both the route and the controller (ie handler for the route):-
+        app.get('/tasks', (req, res) => {
+            res.json({
+                status: 'Success',
+                data: TASKS
+            })
+        })
+
+    This part is the route....
+        app.get('/tasks'
+
+    This part is the controller which is a callback function or handler for that particular route
+        (req, res) => {
+            res.json({
+                status: 'Success',
+                data: TASKS
+            })
+        }
+
+    
+
 
 
 
