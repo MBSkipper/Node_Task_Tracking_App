@@ -1,4 +1,4 @@
-const TASKS = [
+let TASKS = [
     {
         id: 1,
         text: 'Select the lunch menu',
@@ -56,7 +56,6 @@ const getTasks = (req, res) => {
     })
 }
 
-
 /**POST creates a new task*/
 const createTask = (req, res) => {
     
@@ -74,7 +73,7 @@ const createTask = (req, res) => {
         message: 'Task added successfully!'
      })
 }
-
+/**PATCH - updates a task */
 const updateTask = (req, res) => {
     const { id } = req.params //ensure params is plural!!
     const { text, completed } = req.body 
@@ -101,36 +100,56 @@ const updateTask = (req, res) => {
      })
 }
 
+/**DELETE - deletes a task*/
+const deleteTask = (req, res) => {
+    const { id } = req.params //ensure params is plural!!
+
+    let existingTask = TASKS.find(t => t.id == id)
+    if(!existingTask) {
+        return res.status(404).json({
+            status: 'FAILED',
+            message: 'Task not found'
+        })
+    } 
+
+    TASKS = TASKS.filter(t => t.id != id)
+
+     res.json({           
+        status: 'SUCCESS',
+        message: 'Task deleted successfully!'
+     })
+}
+
 module.exports = {
     getTasks,
     createTask,
-    updateTask
+    updateTask,
+    deleteTask
 }
 
 /*
 NOTES 
 Line 1 - /* DATA ARRAY - In app data provided in an array as no database is attached Normally data would be provided in a database and attached in a Model file within the src file.  this model file would be accessible in index.js as well as route and controller files
 Line 49 - let taskCounter = 9 - initial value = 9 as there are already 8 tasks in the tasks array
-Line 63 - const { text } = req.body //request - this gets a list of tasks
-Line 65 - 68 - const newTask = {
+Line 62 - const { text } = req.body //request - this gets a list of tasks
+Line 64 - 67 - const newTask = {
         id: taskCounter++, //increments onwards from 8 existing tasks plus any new ones added
         text,
         completed: false //default value
-Line 70 - TASKS.push(newTask) pushes the newly created task into the TASKS array
+Line 69 - TASKS.push(newTask) pushes the newly created task into the TASKS array
 
-Line 72 - 72 - res.json({           //response to client
+Line 71 - 74 - res.json({           //response to client
         status: 'SUCCESS',
         message: 'Task added successfully!'
      })
-Lines 78 - 81 - note that we are using common module JS system below for exporting modules
+Lines 103 - 108 - note that we are using common module JS system below for exporting modules
 
-Line 79 - const { id } = req.params - this destructured variable has access to the id via req.params.  Ensure params is plural or this will not work
-Line 82 - let existingTask = TASKS.find(t => t.id == id) finds id for const id on line 79.  The == will enable type convertion from number to string as this is not strict equality.  Eg it will check for say, string '5' against numerical 5 in the data array.  An alternative would be to write  code as let existingTask = TASKS.find(t => t.id === Number(id)
-Line 82 - 88 If the task is not found the status code 400 is sent along with the json() response message
-Line 90 - 92 - checks that there is no falsy value ie null, undefined, or '' and then ensures the existing text field is replaced with the updated text field
-Line 94 - 96 - here completed is a boolean value, so to avoid the default false value being misinterpreted, this is a hard check to ensure the value is not undefined, so whatever is the value of completed given then enable the value to be updated.  Also there is a check to ensure that the string 'false' is converted to boolean false.Remember a non empty string is always true so even string "false" would be interpreted as true.
-
-
+Line 78 - const { id } = req.params - this destructured variable has access to the id via req.params.  Ensure params is plural or this will not work
+Line 82 - 83 - let existingTask = TASKS.find(t => t.id == id) finds id for const id on line 78.  The == will enable type convertion from number to string as this is not strict equality.  Eg it will check for say, string '5' against numerical 5 in the data array.  An alternative would be to write  code as let existingTask = TASKS.find(t => t.id === Number(id)
+Line 81 - 87 If the task is not found the status code 400 is sent along with the json() response message
+Line 89 - 91 - checks that there is no falsy value ie null, undefined, or '' and then ensures the existing text field is replaced with the updated text field
+Line 93 - 95 - here completed is a boolean value, so to avoid the default false value being misinterpreted, this is a hard check to ensure the value is not undefined, so whatever is the value of completed given then enable the value to be updated.  Also there is a check to ensure that the string 'false' is converted to boolean false.Remember a non empty string is always true so even string "false" would be interpreted as true.
+Line 116 - this filters out the task with the id that you want removed and presents an array that excludes it
 
 */
 
