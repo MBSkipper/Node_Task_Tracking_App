@@ -33,13 +33,24 @@ app.listen(3000, () => {
 
 /*
 NOTES
-Line 1- 7 Essentials for running a node server folder
+Line 1- 7 Notes listing the essentials for running a node server folder
 Line 13 - const taskRoutes = require('./src/routes/task') //gives access to router in routes/task file
+
 Line 16 - app.use(express.json());  // with out this cannot destructure property 'text' of req.body IMPORTANT put this in the code this before the routes 
-Line 20 - This is the connection to the internal task routes if other routes are included eg user routes, they are connected in the same way. The controllers are connected to the routes not to the index.js directly - see example for tasks route and controllers.  Accordingly app.use('/tasks', taskRoutes) //The main name of the route goes here in this case '/tasks'.  Use this approach as the method for naming the route(s)
+Lines 16 - 17 - attaches express.js middleware to the app 
+Lines 16-17 - see ../routes/task.js for a note regarding use of middleware. Most   importantly validateTask middleware is NOT used as an argument in 
+    app.use(express.json());  
+    app.use(express.urlencoded( {extended: false} ))
+because it would then be available in the GET and DELETE requests which would be inappropriate.  It is important to distinguish between middleware for the whole app vs middleware for particular API's
+
 Line 17 - app.use(express.urlencoded( {extended: false} )) // express.urlencoded() is middleware that is required because in POST API cannot directly access req.body in express (line 88).  It is set to {extended: false} because we are not using complex data
+
+Line 20 - this is how the routes are attached to the app
+Line 20 - This is the connection to the internal task routes if other routes are included eg user routes, they are connected in the same way. The controllers are connected to the routes not to the index.js directly - see example for tasks route and controllers.  Accordingly app.use('/tasks', taskRoutes) //The main name of the route goes here in this case '/tasks'.  Use this approach as the method for naming the route(s)
+
 Line 22 - 27 - This is the route route. 
-Lines 20 - 27 - NOTE ONLY THE MAIN ROUTES ARE SHOWN IN index.js
+Lines 20 - 27 - NOTE ONLY THE MAIN ROUTES ARE SHOWN IN index.js.  
+
 Line 29 - listener enables localhost:3000 to be used
 
 
