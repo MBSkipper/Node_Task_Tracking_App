@@ -80,7 +80,7 @@ const updateTask = (req, res) => {
 
     let existingTask = TASKS.find(t => t.id == id)
     if(!existingTask) {
-        return res.status(400).json({
+        return res.status(404).json({
             status: 'FAILED',
             message: 'Task not found'
         })
@@ -129,7 +129,7 @@ module.exports = {
 
 /*
 NOTES 
-Line 1 - /* DATA ARRAY - In app data provided in an array as no database is attached Normally data would be provided in a database and attached in a Model file within the src file.  this model file would be accessible in index.js as well as route and controller files
+Line 1 - /* DATA ARRAY - In app data provided in an array as no database is attached. Note it is declared with 'let' so that Postman requests will work.  Normally data would be provided in a database and attached in a Model file within the src file.  This model file would be accessible in index.js as well as route and controller files
 Line 49 - let taskCounter = 9 - initial value = 9 as there are already 8 tasks in the tasks array
 Line 62 - const { text } = req.body //request - this gets a list of tasks
 Line 64 - 67 - const newTask = {
